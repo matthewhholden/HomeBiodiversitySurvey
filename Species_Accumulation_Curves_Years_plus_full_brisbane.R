@@ -38,7 +38,7 @@ source('Tamar_Biodiversity_Functions.R')
   
 
 #### House Records ####
-  dat.house = read.csv('House_records.csv')
+  dat.house = read.csv('House_records_RY.csv')
   unique_records.h = Create1stRecords(dat.house)
   min.date.h = min(unique_records.h$eventDate)
   days.h = (unique_records.h$eventDate - min.date.h)/(60*60*24)
@@ -94,9 +94,6 @@ source('Tamar_Biodiversity_Functions.R')
     
     
     
-    
-    
-    
     #### Plot Brisbane Curves 
     #### use lim 1 for lockdown, lim 2 for year
     lw=4
@@ -141,3 +138,64 @@ source('Tamar_Biodiversity_Functions.R')
 #species at end of year
     tot.year = tail(which(days.h==365),1)
     tot.lockdown = tail(which(days.h==end.uni.lockdown),1)
+    
+    
+############### Taxa
+    
+    #house curve
+    ind.lep = which(unique_records.h$order=="Lepidoptera")
+    ind.dip = which(unique_records.h$order=="Diptera")
+    ind.pla = which(unique_records.h$kingdom=="Plantae")
+    ind.col = which(unique_records.h$order=="Coleoptera")
+    ind.hym = which(unique_records.h$order=="Hymenoptera")
+    ind.hem = which(unique_records.h$order=="Hemiptera")
+    ind.ara = which(unique_records.h$class=="Arachnida")
+    ind.ave = which(unique_records.h$class=="Aves")
+    
+    ind.np = which(unique_records.h$kingdom !="Plantae")
+    
+    house.acum.curv.l = cumsum(unique_records.h$tick[ind.lep])
+    house.acum.curv.d = cumsum(unique_records.h$tick[ind.dip])
+    house.acum.curv.p = cumsum(unique_records.h$tick[ind.pla])
+    house.acum.curv.c = cumsum(unique_records.h$tick[ind.col])
+    house.acum.curv.h = cumsum(unique_records.h$tick[ind.hym])
+    house.acum.curv.he = cumsum(unique_records.h$tick[ind.hem])
+    house.acum.curv.a = cumsum(unique_records.h$tick[ind.ara])
+    house.acum.curv.av = cumsum(unique_records.h$tick[ind.ave])
+    house.acum.curv.np = cumsum(unique_records.h$tick[ind.np])
+    
+    days.h.l = (unique_records.h$eventDate[ind.lep] - min.date.h)/(60*60*24)
+    days.h.d = (unique_records.h$eventDate[ind.dip] - min.date.h)/(60*60*24)
+    days.h.p = (unique_records.h$eventDate[ind.pla] - min.date.h)/(60*60*24)
+    days.h.c = (unique_records.h$eventDate[ind.col] - min.date.h)/(60*60*24)
+    days.h.h = (unique_records.h$eventDate[ind.hym] - min.date.h)/(60*60*24)
+    days.h.he = (unique_records.h$eventDate[ind.hem] - min.date.h)/(60*60*24)
+    days.h.a = (unique_records.h$eventDate[ind.ara] - min.date.h)/(60*60*24)
+    days.h.av = (unique_records.h$eventDate[ind.ave] - min.date.h)/(60*60*24)
+    days.h.np = (unique_records.h$eventDate[ind.np] - min.date.h)/(60*60*24)
+    
+    plot(days.h.l, house.acum.curv.l, 
+        type='l', col=1, lty=1, lwd = lw, xlim = c(0,365),
+         xaxs="i", yaxs="i",
+         xlab = 'Days', ylab = 'Species', cex.axis = 1.5, cex.lab=2) 
+    legend("bottomright", "Lepidoptera", 
+           col = 1, lty = 1, lwd = lw, bty = 'n', cex=1.3
+    )
+    
+    plot(days.h.d, house.acum.curv.d, 
+         xlim = c(0,365), ylim = c(0,110),
+         type='l', lty=2, col=2, lwd = lw,
+         xaxs="i", yaxs="i",
+         xlab = 'Days', ylab = 'Species', cex.axis = 1.5, cex.lab=2) 
+    lines(days.h.c, house.acum.curv.c, col=3, lty=3, lwd = lw)
+    lines(days.h.h, house.acum.curv.h, col=4, lty=4, lwd = lw)
+    lines(days.h.he, house.acum.curv.he, col=5, lty=5, lwd = lw)
+    lines(days.h.a, house.acum.curv.a, col=6, lty=6, lwd = lw)
+    lines(days.h.av, house.acum.curv.av, col=7, lty=7, lwd = lw)
+    
+    legend("bottomright", c('Diptera', 'Coleoptera', 'Hymenoptera',
+                        'Hemiptera', 'Arachnida', 'Aves'), 
+           col = 2:7, lty = 2:7, lwd = rep(lw,6), bty = 'n', cex=1.3
+    )
+    
+    
